@@ -20,9 +20,9 @@ index_df = pdr.get_data_yahoo(index_name, start_date, end_date)
 index_df['Percent Change'] = index_df['Adj Close'].pct_change()
 index_return = (index_df['Percent Change'] + 1).cumprod()[-1]
 
-# Find top 30% performing stocks (relative to the S&P 500)
+# Calculate return multiple against S&P500
 for ticker in tickers:
-    # Download historical data as CSV for each stock (makes the process faster)
+    # Download historical data as CSV for each stock
     df = pdr.get_data_yahoo(ticker, start_date, end_date)
     df.to_csv(f'{ticker}.csv')
 
