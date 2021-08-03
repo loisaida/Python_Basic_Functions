@@ -3,24 +3,18 @@ import pandas as pd
 from config import financial_model_prep
 
 demo = financial_model_prep()
+url = (f'https://financialmodelingprep.com/api/v3/stock-screener?marketCapMoreThan=1000000000&betaMoreThan=1&volumeMoreThan=10000&sector=Technology&exchange=NASDAQ&dividendMoreThan=0&limit=1000&apikey={demo}')
 
 companies = []
-marketcap = str(1000000000)
-url = (f'https://financialmodelingprep.com/api/v3/stock-screener?marketCapMoreThan={marketcap}&betaMoreThan=1&volumeMoreThan=10000&sector=Technology&exchange=NASDAQ&dividendMoreThan=0&limit=1000&apikey={demo}')
-
-#get companies based on criteria defined about
 screener = requests.get(url).json()
-
 for item in screener:
- companies.append(item['symbol'])
- 
-#print(companies)
+    companies.append(item['symbol'])
+
 value_ratios ={}
-#get the financial ratios
 count = 0
 for company in companies:
     try:
-        if count <30:
+        if count < 30:
             count = count + 1
             fin_ratios = requests.get(f'https://financialmodelingprep.com/api/v3/ratios/{company}?apikey={demo}').json()
             value_ratios[company] = {}
@@ -35,6 +29,7 @@ for company in companies:
             value_ratios[company]['PE'] = fin_ratios[0]['priceEarningsRatio']
             value_ratios[company]['Dividend_Yield'] = fin_ratios[0]['dividendYield']
             value_ratios[company]['Gross_Profit_Margin'] = fin_ratios[0]['grossProfitMargin']
+            
             #more financials on growth:https://financialmodelingprep.com/api/v3/financial-growth/AAPL?apikey=demo
             growth_ratios = requests.get(f'https://financialmodelingprep.com/api/v3/financial-growth/{company}?apikey={demo}').json()
             value_ratios[company]['Revenue_Growth'] = growth_ratios[0]['revenueGrowth']
@@ -43,13 +38,12 @@ for company in companies:
             value_ratios[company]['RD_Growth'] = growth_ratios[0]['rdexpenseGrowth']
     except:
         pass
+
 print (value_ratios)
 
-DF = pd.DataFrame.from_dict(value_ratios,orient='index')
-print()
-print(DF.head(4))
+dataframe = pd.DataFrame.from_dict(value_ratios,orient='index')
+print(dataframe.head)
 
-#criteria ranking
 ROE = 1.2
 ROA = 1.1
 Debt_Ratio = -1.1
@@ -60,14 +54,11 @@ PS = -1.05
 Revenue_Growth = 1.25
 Net_Income_Growth = 1.10
 
-#mean to enable comparison across ratios
 ratios_mean = []
-for item in DF.columns:
- ratios_mean.append(DF[item].mean())
-#divide each value in dataframe by mean to normalize values
-DF = DF / ratios_mean
+for item in dataframe.columns:
+    ratios_mean.append(dataframe[item].mean())
 
-DF['ranking'] = DF['NetIncome_Growth']*Net_Income_Growth + DF['Revenue_Growth']*Revenue_Growth  + DF['ROE']*ROE + DF['ROA']*ROA + DF['Debt_Ratio'] * Debt_Ratio + DF['Interest_Coverage'] * Interest_Coverage + DF['Dividend_Payout_Ratio'] * Dividend_Payout_Ratio + DF['PB']*PB + DF['PS']*PS
+dataframe = dataframe / ratios_mean
+dataframe['ranking'] = dataframe['NetIncome_Growth']*Net_Income_Growth + dataframe['Revenue_Growth']*Revenue_Growth  + dataframe['ROE']*ROE + dataframe['ROA']*ROA + dataframe['Debt_Ratio'] * Debt_Ratio + dataframe['Interest_Coverage'] * Interest_Coverage + dataframe['Dividend_Payout_Ratio'] * Dividend_Payout_Ratio + dataframe['PB']*PB + dataframe['PS']*PS
 
-print()
-print(DF.sort_values(by=['ranking'],ascending=False))
+print(dataframe.sort_values(by=['ranking'],ascending=False))
