@@ -5,22 +5,15 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import datetime
 from yahoo_fin import stock_info as si
-
 pd.set_option('display.max_rows', None)
-
-interval = '1m'
 
 options = Options()
 options.add_argument("--headless")
 options.add_argument('window-size=1200x600')
 webdriver = webdriver.Chrome(executable_path='/Users/shashank/Documents/Code/Python/Finance/chromedriver', options = options)
 
+interval = '1m'
 tickers = ['SCHB', 'AAPL', 'AMZN', 'TSLA', 'AMD', 'MSFT', 'NFLX']
-
-mylist = []
-today = datetime.date.today()
-mylist.append(today)
-today = mylist[0]
 
 signals = []
 sells = []
@@ -75,14 +68,11 @@ for ticker in tickers:
         print (f'{ticker} has an overall recommendation of {signal}')
         print ('-'*60)
         
-    except:
+    except Exception as e:
+        print (e)
         continue
     
-dataframe = pd.DataFrame(list(zip(valid_tickers, prices, signals, buys, sells, neutrals)), columns =['Tickers', 'Current Price', 'Signals', 'Buys', 'Sells', 'Neutrals'])
+dataframe = pd.DataFrame(list(zip(valid_tickers, prices, signals, buys, sells, neutrals)), columns =['Ticker', 'Current Price', 'Signals', 'Buys', 'Sells', 'Neutrals'])
 dataframe = dataframe.set_index('Tickers')
-dataframe.to_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}_{interval}.csv')
-
-dataframe = pd.read_csv(f'/Users/shashank/Documents/Code/Python/Outputs/tradingview/{today}_{interval}.csv', index_col=0)
-# dataframe = dataframe.drop(columns = 'Unnamed: 0')
 dataframe = dataframe.sort_values('Signals', ascending=False)
-print (dataframe.head(15))
+print (dataframe.head())
