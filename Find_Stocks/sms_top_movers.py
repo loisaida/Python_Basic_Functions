@@ -6,7 +6,7 @@ from email import encoders
 import yahoo_fin.stock_info as si
 import time
 import datetime
-from config import *
+from config import junk_email_username, good_email_username, junk_email_password
 import os
 
 df = si.get_day_gainers()
