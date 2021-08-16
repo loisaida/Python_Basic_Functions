@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
 import datetime as dt
 
-symbol = "TSLA"
-days_forward = 10
+symbol = input('Enter a ticker: ')
+days_forward = input('Enter the number of days forward: ')
 
 num_of_years = 10
 start_date = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
-end_date = dt.datetime.now() 
+end_date = dt.datetime.now()
 
 plt.rcParams['figure.figsize'] = [15, 7]
 plt.rc('font', size=14)
