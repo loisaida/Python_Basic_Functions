@@ -12,7 +12,6 @@ num_of_years = 10
 start_date = dt.datetime.now() - dt.timedelta(int(365.25 * num_of_years))
 end_date = dt.datetime.now() 
 
-
 plt.rcParams['figure.figsize'] = [15, 7]
 plt.rc('font', size=14)
 
@@ -46,28 +45,28 @@ result = []
 train_size = 0.6
 
 for sma_length in range(20,500):  
-  data['SMA'] = data['Close'].rolling(sma_length).mean()
-  data['input'] = [int(x) for x in data['Close'] > data['SMA']]
-  
-  df = data.dropna()
+    data['SMA'] = data['Close'].rolling(sma_length).mean()
+    data['input'] = [int(x) for x in data['Close'] > data['SMA']]
 
-  training = df.head(int(train_size * df.shape[0]))
-  test = df.tail(int((1 - train_size) * df.shape[0]))
-  
-  tr_returns = training[training['input'] == 1]['Forward Return']
-  test_returns = test[test['input'] == 1]['Forward Return']
+    df = data.dropna()
 
-  meadays_forward_return_training = tr_returns.mean()
-  meadays_forward_return_test = test_returns.mean()
+    training = df.head(int(train_size * df.shape[0]))
+    test = df.tail(int((1 - train_size) * df.shape[0]))
 
-  pvalue = ttest_ind(tr_returns,test_returns,equal_var=False)[1]
- 
-  result.append({
-      f'Best SMA for {days_forward} days forward':sma_length,
-      'Training Forward Return': meadays_forward_return_training,
-      'Test Forward Return': meadays_forward_return_test,
-      'p-value':pvalue
-  })
+    tr_returns = training[training['input'] == 1]['Forward Return']
+    test_returns = test[test['input'] == 1]['Forward Return']
+
+    meadays_forward_return_training = tr_returns.mean()
+    meadays_forward_return_test = test_returns.mean()
+
+    pvalue = ttest_ind(tr_returns,test_returns,equal_var=False)[1]
+
+    result.append({
+        f'Best SMA for {days_forward} days forward':sma_length,
+        'Training Forward Return': meadays_forward_return_training,
+        'Test Forward Return': meadays_forward_return_test,
+        'p-value':pvalue
+    })
 
 result.sort(key = lambda x : -x['Training Forward Return'])
 
@@ -82,7 +81,7 @@ for key, value in result[0].items():
         print (key + ':', value)
     else:
         print (key + ':', value)
-        
+
 best_sma = result[0][f'Best SMA for {days_forward} days forward']
 data['SMA'] = data['Close'].rolling(best_sma).mean()
 
