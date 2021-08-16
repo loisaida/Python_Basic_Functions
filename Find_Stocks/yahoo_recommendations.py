@@ -44,12 +44,12 @@ for ticker in tickers:
     url =  lhs_url + ticker + rhs_url
     r = requests.get(url, headers=headers)
     if not r.ok:
-        recommendation = 6
+        recommendation = 0
     try:
         result = r.json()['quoteSummary']['result'][0]
         recommendation =result['financialData']['recommendationMean']['fmt']
     except:
-        recommendation = 6
+        recommendation = 0
     
     recommendations.append(recommendation)
     time.sleep(1.5)
