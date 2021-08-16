@@ -40,8 +40,9 @@ for ticker in tickers:
               'financialData,earningsHistory,earningsTrend,industryTrend&' \
               'corsDomain=finance.yahoo.com'
               
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     url =  lhs_url + ticker + rhs_url
-    r = requests.get(url)
+    r = requests.get(url, headers=headers)
     if not r.ok:
         recommendation = 6
     try:
