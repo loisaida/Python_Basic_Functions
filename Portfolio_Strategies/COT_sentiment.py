@@ -7,7 +7,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 rcParams['figure.figsize'] = (15, 10)
 
-def get_COT(url, file_name):    
+def get_COT(url, file_name):
     with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)
     with zipfile.ZipFile(file_name) as zf:
