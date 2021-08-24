@@ -12,7 +12,7 @@ sns.set(style = 'darkgrid', context = 'talk', palette = 'Dark2')
 
 num_of_years = 3
 start = datetime.datetime.now() - datetime.timedelta(int(365.25 * num_of_years))
-end = datetime.datetime.now() 
+end = datetime.datetime.now()
 date_format = mdates.DateFormatter('%m/%y')
 
 tickers = ['TSLA', 'AAPL', 'AMZN', 'NFLX']
